@@ -1,18 +1,11 @@
 package com.example.contactmanager.domain.entity;
 
-import lombok.*;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "users")
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-@Builder(toBuilder = true)
 public class User {
 
     @Id
@@ -20,29 +13,55 @@ public class User {
     @Column(nullable = false)
     private Long id;
 
-    @Column(unique = true)
-    private String username;
-
-    @Column(unique = true)
     private String email;
-
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role")
     private Role role;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<Contact> contacts = new ArrayList<>();
 
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User otherUser)) return false;
-        return Objects.equals(getUsername(), otherUser.getUsername());
+    public User() {
     }
 
-    @Override
-    public int hashCode() {
-        return getUsername().hashCode();
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public List<Contact> getContacts() {
+        return contacts;
+    }
+
+    public void setContacts(List<Contact> contacts) {
+        this.contacts = contacts;
     }
 }

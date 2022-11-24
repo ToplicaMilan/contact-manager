@@ -1,12 +1,12 @@
-CREATE TABLE if not exists users
+CREATE TABLE IF NOT EXISTS users
 (
     id BIGINT PRIMARY KEY,
     email VARCHAR(40) unique,
     password VARCHAR(255),
-    user_role VARCHAR(10)
+    role VARCHAR(10)
     );
 
-CREATE TABLE if not exists contacts
+CREATE TABLE IF NOT EXISTS contacts
 (
     id BIGINT PRIMARY KEY,
     first_name VARCHAR(40) NOT NULL,
