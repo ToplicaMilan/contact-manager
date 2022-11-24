@@ -1,4 +1,4 @@
-package com.example.contactmanager.domain.entities;
+package com.example.contactmanager.domain.entity;
 
 import lombok.*;
 import javax.persistence.*;
@@ -10,30 +10,28 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Builder(toBuilder = true)
-public class ContactEntity {
+public class Contact {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "first_name", nullable = false)
+    @Column(nullable = false)
     private String firstName;
 
-    @Column(name = "last_name", nullable = false)
+    @Column(nullable = false)
     private String lastName;
 
-    @Column(name = "adrress")
     private String address;
 
-    @Column(name = "phone_number")
     private String phoneNumber;
 
     @ManyToOne
-    private UserEntity user;
+    private User user;
 
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ContactEntity otherContact)) return false;
+        if (!(o instanceof Contact otherContact)) return false;
         return id != null && id.equals(otherContact.getId());
     }
 

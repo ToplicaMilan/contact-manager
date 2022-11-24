@@ -1,4 +1,4 @@
-package com.example.contactmanager.domain.entities;
+package com.example.contactmanager.domain.entity;
 
 import lombok.*;
 import javax.persistence.*;
@@ -13,33 +13,31 @@ import java.util.Objects;
 @Getter
 @Setter
 @Builder(toBuilder = true)
-public class UserEntity {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id", nullable = false)
+    @Column(nullable = false)
     private Long id;
 
-    @Column(name = "username", unique = true)
+    @Column(unique = true)
     private String username;
 
-    @Column(name = "email",  unique = true)
+    @Column(unique = true)
     private String email;
 
-    @Column(name = "password")
     private String password;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
-    private RoleType roleType;
+    private Role role;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    @Column(name = "user_contacts")
-    private List<ContactEntity> contacts = new ArrayList<>();
+    private List<Contact> contacts = new ArrayList<>();
 
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof UserEntity otherUser)) return false;
+        if (!(o instanceof User otherUser)) return false;
         return Objects.equals(getUsername(), otherUser.getUsername());
     }
 

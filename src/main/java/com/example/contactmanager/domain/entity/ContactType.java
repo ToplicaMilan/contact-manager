@@ -1,4 +1,4 @@
-package com.example.contactmanager.domain.entities;
+package com.example.contactmanager.domain.entity;
 
 public enum ContactType {
 
