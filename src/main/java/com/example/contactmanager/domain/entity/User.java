@@ -10,7 +10,6 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
     private Long id;
 
     private String email;
@@ -21,9 +20,6 @@ public class User {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<Contact> contacts = new ArrayList<>();
-
-    public User() {
-    }
 
     public Long getId() {
         return id;

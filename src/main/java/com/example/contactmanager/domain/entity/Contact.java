@@ -16,11 +16,10 @@ public class Contact {
     private String phoneNumber;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
     private User user;
 
-    public Contact() {
-    }
+    @ManyToOne
+    private Type contactType;
 
     public Long getId() {
         return id;
@@ -68,6 +67,14 @@ public class Contact {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Type getContactType() {
+        return contactType;
+    }
+
+    public void setContactType(Type contactType) {
+        this.contactType = contactType;
     }
 }
 
