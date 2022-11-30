@@ -25,7 +25,11 @@ public class UserService {
 
     public UserDetails createUser(UserCreation dto) {
         User user = userRepository.save(userMapper.userCreationDtoToEntity(dto));
-        user.setRole(RoleType.USER);
+        user.setRole(RoleType.ADMIN);
         return userRepoUserDetailService.loadUserByUsername(user.getEmail());
+    }
+
+    public UserDetails getUser(String email) {
+        return userRepoUserDetailService.loadUserByUsername(email);
     }
 }

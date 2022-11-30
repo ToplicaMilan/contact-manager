@@ -20,14 +20,9 @@ public class UserRepoUserDetailService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-        BridgeUser bridgeUser = null;
-        if (optionalUser.isPresent())
-            bridgeUser = new BridgeUser(optionalUser.get());
-        return bridgeUser;
-//        return userRepository.findByEmail(email)
-//                .map(BridgeUser::new)
-//                .orElseThrow(() -> new UsernameNotFoundException(email));
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByEmail(username)
+                .map(BridgeUser::new)
+                .orElseThrow(() -> new UsernameNotFoundException(username));
     }
 }

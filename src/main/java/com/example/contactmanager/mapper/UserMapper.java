@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-//@Mapper
 @Component
 public class UserMapper {
 
@@ -18,7 +17,7 @@ public class UserMapper {
         User user = new User();
         user.setEmail(dto.getEmail());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        user.setRole(RoleType.USER);
+        user.setRole(RoleType.ADMIN);
         return user;
     }
 }

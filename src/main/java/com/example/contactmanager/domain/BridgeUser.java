@@ -30,7 +30,7 @@ public class BridgeUser implements UserDetails {
 
     @Override
     public String getPassword() {
-        return getPassword();
+        return this.password;
     }
 
     @Override

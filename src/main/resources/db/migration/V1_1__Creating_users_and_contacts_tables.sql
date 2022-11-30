@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS users
 (
-    id BIGINT PRIMARY KEY,
-    email VARCHAR(40) unique,
+    id BIGSERIAL PRIMARY KEY,
+    email VARCHAR(40),
     password VARCHAR(255),
     role VARCHAR(10)
     );

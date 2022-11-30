@@ -30,8 +30,8 @@ public class SecurityConfiguration {
                 .and()
                 .authorizeHttpRequests(auth -> auth
                         .antMatchers("/api/signup").permitAll()
-                        .antMatchers("/api/admin").hasRole(RoleType.ADMIN.name()))
-//                        .anyRequest().authenticated())
+                        .antMatchers("/api/admin").hasRole(RoleType.ADMIN.name())
+                        .anyRequest().authenticated())
                 .userDetailsService(detailService)
                 .httpBasic(withDefaults());
         return http.build();
