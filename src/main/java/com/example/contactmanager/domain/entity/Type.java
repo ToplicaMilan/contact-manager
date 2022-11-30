@@ -17,9 +17,6 @@ public class Type {
     @Enumerated(EnumType.STRING)
     private ContactType contactType;
 
-//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "type")
-//    List<Contact> contacts = new ArrayList<>();
-
     public Long getId() {
         return id;
     }

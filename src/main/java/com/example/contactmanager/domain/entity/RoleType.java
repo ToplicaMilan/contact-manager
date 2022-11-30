@@ -1,6 +1,6 @@
 package com.example.contactmanager.domain.entity;
 
-public enum Role {
+public enum RoleType {
 
     USER, ADMIN
 }
