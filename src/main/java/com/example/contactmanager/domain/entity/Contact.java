@@ -3,7 +3,6 @@ package com.example.contactmanager.domain.entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "contacts")
 public class Contact {
 
     @Id
@@ -19,7 +18,7 @@ public class Contact {
     private User user;
 
     @ManyToOne
-    private Type contactType;
+    private ContactType contactType;
 
     public Long getId() {
         return id;
@@ -69,11 +68,11 @@ public class Contact {
         this.user = user;
     }
 
-    public Type getContactType() {
+    public ContactType getContactType() {
         return contactType;
     }
 
-    public void setContactType(Type contactType) {
+    public void setContactType(ContactType contactType) {
         this.contactType = contactType;
     }
 }
