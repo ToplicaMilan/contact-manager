@@ -1,11 +1,11 @@
-package com.example.contactmanager.security;
+package com.example.contactmanager.config;
 
 import com.example.contactmanager.domain.entity.RoleType;
-import com.example.contactmanager.repository.UserRepository;
 import com.example.contactmanager.service.UserRepoUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -19,8 +19,12 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-    @Autowired
-    private UserRepoUserDetailService detailService;
+
+    private final UserRepoUserDetailService detailService;
+
+    public SecurityConfiguration(UserRepoUserDetailService detailService) {
+        this.detailService = detailService;
+    }
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -29,8 +33,11 @@ public class SecurityConfiguration {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests(auth -> auth
-                        .antMatchers("/api/signup").permitAll()
-                        .antMatchers("/api/admin").hasRole(RoleType.ADMIN.name())
+                        .antMatchers(HttpMethod.POST, "/api/signup").permitAll()
+                        .antMatchers("/api/admin/**").hasAuthority(RoleType.ADMIN.name())
+                        .antMatchers("/api/test/user").hasAnyAuthority(RoleType.USER.name(), RoleType.ADMIN.name())
+                        .antMatchers("/api/test/admin").hasAuthority(RoleType.ADMIN.name())
+                        .antMatchers("/api/admin/contact_type/**").hasAuthority(RoleType.ADMIN.name())
                         .anyRequest().authenticated())
                 .userDetailsService(detailService)
                 .httpBasic(withDefaults());
