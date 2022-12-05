@@ -1,6 +1,6 @@
-package com.example.contactmanager.dto;
+package com.example.contactmanager.controller.dto;
 
-public class UserCreation {
+public class UserCreationDto {
 
     private String email;
     private String password;

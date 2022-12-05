@@ -8,16 +8,16 @@ CREATE TABLE IF NOT EXISTS users
 
 CREATE TABLE IF NOT EXISTS contact_type
 (
-    id BIGINT PRIMARY KEY ,
+    id BIGSERIAL PRIMARY KEY,
     description  VARCHAR(40),
-    contact_type VARCHAR(40)
+    type VARCHAR(40)
 );
 
-CREATE TABLE IF NOT EXISTS contacts
+CREATE TABLE IF NOT EXISTS contact
 (
-    id BIGINT PRIMARY KEY,
-    first_name VARCHAR(40) NOT NULL,
-    last_name VARCHAR(40) NOT NULL,
+    id BIGSERIAL PRIMARY KEY,
+    first_name VARCHAR(40),
+    last_name VARCHAR(40),
     address VARCHAR(40),
     phone_number VARCHAR(40),
     user_id BIGINT references users(id),
