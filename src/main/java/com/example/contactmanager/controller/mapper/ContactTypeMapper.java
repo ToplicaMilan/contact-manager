@@ -1,7 +1,7 @@
 package com.example.contactmanager.controller.mapper;
 
-import com.example.contactmanager.domain.entity.ContactType;
 import com.example.contactmanager.controller.dto.ContactTypeDto;
+import com.example.contactmanager.domain.entity.ContactType;
 import org.springframework.stereotype.Component;
 
 @Component

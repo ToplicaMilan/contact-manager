@@ -32,12 +32,13 @@ public class SecurityConfiguration {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests(auth -> auth
-                        .antMatchers(HttpMethod.POST, "/api/signup").permitAll()
+                        .antMatchers(HttpMethod.POST, "/api/signup/**").permitAll()
                         .antMatchers("/api/admin/**").hasAuthority(RoleType.ADMIN.name())
                         .antMatchers("/api/test/user").hasAnyAuthority(RoleType.USER.name(), RoleType.ADMIN.name())
                         .antMatchers("/api/test/admin").hasAuthority(RoleType.ADMIN.name())
                         .antMatchers("/api/admin/contact_type/**").hasAuthority(RoleType.ADMIN.name())
                         .antMatchers("/api/admin/user/**").hasAuthority(RoleType.ADMIN.name())
+                        .antMatchers("/api/admin/contact_type/**").hasAuthority(RoleType.ADMIN.name())
                         .anyRequest().authenticated())
                 .userDetailsService(detailService)
                 .httpBasic(withDefaults());

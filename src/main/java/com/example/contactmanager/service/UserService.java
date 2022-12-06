@@ -1,9 +1,9 @@
 package com.example.contactmanager.service;
 
-import com.example.contactmanager.controller.dto.UserCreationDto;
 import com.example.contactmanager.controller.mapper.UserMapper;
 import com.example.contactmanager.domain.entity.User;
 import com.example.contactmanager.domain.repository.UserRepository;
+import com.example.contactmanager.exception.UserEmailException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,9 +20,11 @@ public class UserService {
         this.userMapper = userMapper;
     }
 
-    public UserCreationDto createUser(UserCreationDto dto) {
-        User user = userRepository.save(userMapper.dtoToEntity(dto));
-        return dto;
+    public void saveUser(User user) {
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new UserEmailException("Email already taken");
+        }
+        userRepository.save(user);
     }
 
     public Optional<User> getUser(String email) {

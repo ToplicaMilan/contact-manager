@@ -7,12 +7,11 @@ import javax.validation.constraints.Pattern;
 public class UserCreationDto {
 
     @NotEmpty
-    @Email(regexp = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$", message = "Email not valid")
+    @Email(message = "not valid")
     private String email;
 
     @NotEmpty
-    @Pattern(regexp = "(?=^.{8,}$)(?=.*\\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$"
-            , message = "Password not valid")
+    @Pattern(regexp = "(?=^.{8,}$)(?=.*\\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$", message = "not valid")
     private String password;
 
     public String getEmail() {

@@ -1,7 +1,6 @@
 package com.example.contactmanager.controller.dto;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 public class ContactTypeDto {
 
