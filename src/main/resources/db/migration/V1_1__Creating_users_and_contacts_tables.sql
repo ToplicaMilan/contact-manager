@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS users
     email VARCHAR(40),
     password VARCHAR(255),
     role VARCHAR(10)
-    );
+);
 
 CREATE TABLE IF NOT EXISTS contact_type
 (
@@ -22,4 +22,4 @@ CREATE TABLE IF NOT EXISTS contact
     phone_number VARCHAR(40),
     user_id BIGINT references users(id),
     contact_type_id BIGINT references contact_type(id)
-    );
+);
