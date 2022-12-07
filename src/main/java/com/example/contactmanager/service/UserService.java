@@ -22,7 +22,7 @@ public class UserService {
 
     public void saveUser(User user) {
         if (userRepository.existsByEmail(user.getEmail())) {
-            throw new UserEmailException("Email already taken");
+            throw new UserEmailException("email already taken");
         }
         userRepository.save(user);
     }

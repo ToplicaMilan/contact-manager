@@ -32,7 +32,7 @@ public class SecurityConfiguration {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests(auth -> auth
-                        .antMatchers(HttpMethod.POST, "/api/signup/**").permitAll()
+                        .antMatchers(HttpMethod.POST, "/api/user/signup/**").permitAll()
                         .antMatchers("/api/admin/**").hasAuthority(RoleType.ADMIN.name())
                         .antMatchers("/api/test/user").hasAnyAuthority(RoleType.USER.name(), RoleType.ADMIN.name())
                         .antMatchers("/api/test/admin").hasAuthority(RoleType.ADMIN.name())

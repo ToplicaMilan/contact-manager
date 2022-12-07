@@ -23,9 +23,6 @@ public class ContactType {
         this.type = type;
     }
 
-    //    @OneToMany(cascade = CascadeType.ALL, mappedBy = "contactType")
-//    private List<Contact> contacts = new ArrayList<>();
-
     public Long getId() {
         return id;
     }

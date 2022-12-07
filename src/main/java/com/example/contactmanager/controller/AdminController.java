@@ -28,7 +28,7 @@ public class AdminController {
 
     @PostMapping("/user")
     public ResponseEntity<UserCreationDto> createUser(@Valid @RequestBody UserCreationDto dto) {
-        var user = userMapper.dtoToEntity(dto);
+        var user = userMapper.mapToEntity(dto);
         userService.saveUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
@@ -43,16 +43,17 @@ public class AdminController {
     }
 
     @PutMapping("/contact_type/{id}")
-    public ResponseEntity<ContactTypeDto> updateContactType(@PathVariable(name = "id") Long id, @RequestBody ContactTypeDto dto) {
+    public ResponseEntity<ContactTypeDto> updateContactType(@PathVariable(name = "id") Long id, @Valid @RequestBody ContactTypeDto dto) {
         var oldContactType = contactTypeService.findById(id);
         oldContactType.setType(dto.getType());
         oldContactType.setDescription(dto.getDescription());
         contactTypeService.saveContactType(oldContactType);
         return ResponseEntity.status(HttpStatus.OK).body(dto);
+        // ResponseEntity.ok
     }
 
     @DeleteMapping("/contact_type/{id}")
-    public ResponseEntity<ContactTypeDto> deleteContactType(@PathVariable(name = "id") Long id) {
+    public ResponseEntity<Void> deleteContactType(@PathVariable(name = "id") Long id) {
         var oldContactType = contactTypeService.findById(id);
         contactTypeService.deleteContactType(oldContactType);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

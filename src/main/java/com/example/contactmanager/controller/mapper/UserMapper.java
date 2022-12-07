@@ -9,15 +9,15 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserMapper {
-
+// moze i kao static field
     @Autowired
     protected PasswordEncoder passwordEncoder;
-
-    public User dtoToEntity(UserCreationDto dto){
+//map
+    public User mapToEntity(UserCreationDto dto){
         User user = new User();
         user.setEmail(dto.getEmail());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        user.setRole(RoleType.USER);
+        user.setRole(dto.getRole());
         return user;
     }
 }

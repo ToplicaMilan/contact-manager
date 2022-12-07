@@ -16,21 +16,13 @@ public class ContactTypeService {
         this.contactTypeRepository = contactTypeRepository;
         this.contactTypeMapper = typeMapper;
     }
-// save...
+
     public void saveContactType(ContactType contactType) {
         if (contactTypeRepository.existsByTypeIgnoreCase(contactType.getType())) {
             throw new ContactTypeException("Contact Type already exists");
         }
         contactTypeRepository.save(contactType);
     }
-
-//    public void updateContactType(Long id, ContactTypeDto dto) {
-//        if (!contactTypeRepository.existsById(id)) {
-//            throw new ContactTypeException("Contact Type does not exists");
-//        }
-//        ContactType contactType = contactTypeMapper.dtoToEntity(dto);
-//        contactTypeRepository.save(contactType);
-//    }
 
     public ContactType findById(Long id) {
         return contactTypeRepository.findById(id)

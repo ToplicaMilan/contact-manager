@@ -24,7 +24,7 @@ public class UserController {
 
     @PostMapping(value = "/signup")
     public ResponseEntity<UserCreationDto> signUp(@RequestBody UserCreationDto dto) {
-        var user = userMapper.dtoToEntity(dto);
+        var user = userMapper.mapToEntity(dto);
         userService.saveUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
