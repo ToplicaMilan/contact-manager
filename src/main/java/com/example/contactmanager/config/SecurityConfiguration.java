@@ -36,9 +36,10 @@ public class SecurityConfiguration {
                         .antMatchers("/api/admin/**").hasAuthority(RoleType.ADMIN.name())
                         .antMatchers("/api/test/user").hasAnyAuthority(RoleType.USER.name(), RoleType.ADMIN.name())
                         .antMatchers("/api/test/admin").hasAuthority(RoleType.ADMIN.name())
-                        .antMatchers("/api/admin/contact_type/**").hasAuthority(RoleType.ADMIN.name())
+                        .antMatchers("/api/admin/contact-type/**").hasAuthority(RoleType.ADMIN.name())
                         .antMatchers("/api/admin/user/**").hasAuthority(RoleType.ADMIN.name())
-                        .antMatchers("/api/admin/contact_type/**").hasAuthority(RoleType.ADMIN.name())
+                        .antMatchers("/api/admin/contact-type/**").hasAuthority(RoleType.ADMIN.name())
+                        .antMatchers("/api/user/contact/**").hasAuthority(RoleType.USER.name())
                         .anyRequest().authenticated())
                 .userDetailsService(detailService)
                 .httpBasic(withDefaults());

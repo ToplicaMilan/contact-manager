@@ -6,18 +6,18 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
-public class UserCreationDto {
+public class UserRequestDto {
 
     //group pored message
-    @NotEmpty(message = "must not be empty")
-    @Email(message = "not valid")
+    @NotEmpty(message = "Must not be empty")
+    @Email(message = "Not valid")
     private String email;
 
     @NotEmpty
-    @Pattern(regexp = "(?=^.{8,}$)(?=.*\\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$", message = "not valid")
+    @Pattern(regexp = "(?=^.{8,}$)(?=.*\\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$", message = "Not valid")
     private String password;
 
-    @NotEmpty(message = "must not be empty")
+    @NotEmpty(message = "Must not be empty")
     private RoleType role;
 
     public String getEmail() {
