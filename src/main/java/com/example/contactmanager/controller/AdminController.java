@@ -1,16 +1,20 @@
 package com.example.contactmanager.controller;
 
 import com.example.contactmanager.controller.dto.ContactTypeDto;
-import com.example.contactmanager.controller.dto.UserCreationDto;
+import com.example.contactmanager.controller.dto.UserRequestDto;
+import com.example.contactmanager.controller.dto.UserResponseDto;
 import com.example.contactmanager.controller.mapper.UserMapper;
 import com.example.contactmanager.domain.entity.ContactType;
 import com.example.contactmanager.service.ContactTypeService;
 import com.example.contactmanager.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.net.URI;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -27,35 +31,38 @@ public class AdminController {
     }
 
     @PostMapping("/user")
-    public ResponseEntity<UserCreationDto> createUser(@Valid @RequestBody UserCreationDto dto) {
+    public ResponseEntity<UserResponseDto> createUser(@Valid @RequestBody UserRequestDto dto) {
         var user = userMapper.mapToEntity(dto);
         userService.saveUser(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+        var responseDto = userMapper.mapToDto(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
-    @PostMapping("/contact_type")
-    public ResponseEntity<ContactTypeDto> createContactType(@Valid @RequestBody ContactTypeDto dto) {
+    @PostMapping("/contact-type")
+    public ResponseEntity<ContactTypeDto> createContactType(@Validated(ContactTypeDto.OnCreate.class) @RequestBody ContactTypeDto dto) {
         var newContactType = new ContactType();
         newContactType.setDescription(dto.getDescription());
         newContactType.setType(dto.getType());
         contactTypeService.saveContactType(newContactType);
-        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").build(newContactType.getId());
+        return ResponseEntity.created(location).build();
     }
 
-    @PutMapping("/contact_type/{id}")
-    public ResponseEntity<ContactTypeDto> updateContactType(@PathVariable(name = "id") Long id, @Valid @RequestBody ContactTypeDto dto) {
+    @PutMapping("/contact-type/{id}")
+    public ResponseEntity<ContactTypeDto> updateContactType(@PathVariable(name = "id") Long id, @Validated(ContactTypeDto.OnUpdate.class) @RequestBody ContactTypeDto dto) {
         var oldContactType = contactTypeService.findById(id);
+        if (!dto.getDescription().isEmpty()) {
+            oldContactType.setDescription(dto.getDescription());
+        }
         oldContactType.setType(dto.getType());
-        oldContactType.setDescription(dto.getDescription());
         contactTypeService.saveContactType(oldContactType);
-        return ResponseEntity.status(HttpStatus.OK).body(dto);
-        // ResponseEntity.ok
+        return ResponseEntity.ok(dto);
     }
 
-    @DeleteMapping("/contact_type/{id}")
+    @DeleteMapping("/contact-type/{id}")
     public ResponseEntity<Void> deleteContactType(@PathVariable(name = "id") Long id) {
         var oldContactType = contactTypeService.findById(id);
         contactTypeService.deleteContactType(oldContactType);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.noContent().build();
     }
 }
