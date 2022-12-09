@@ -7,7 +7,6 @@ import com.example.contactmanager.controller.mapper.UserMapper;
 import com.example.contactmanager.domain.entity.ContactType;
 import com.example.contactmanager.service.ContactTypeService;
 import com.example.contactmanager.service.UserService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -35,11 +34,15 @@ public class AdminController {
         var user = userMapper.mapToEntity(dto);
         userService.saveUser(user);
         var responseDto = userMapper.mapToDto(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").build(user.getId());
+        return ResponseEntity.created(location).build();
     }
 
     @PostMapping("/contact-type")
-    public ResponseEntity<ContactTypeDto> createContactType(@Validated(ContactTypeDto.OnCreate.class) @RequestBody ContactTypeDto dto) {
+    public ResponseEntity<ContactTypeDto> createContactType(
+            @Validated(ContactTypeDto.OnCreate.class)
+            @RequestBody ContactTypeDto dto)
+    {
         var newContactType = new ContactType();
         newContactType.setDescription(dto.getDescription());
         newContactType.setType(dto.getType());
@@ -49,7 +52,11 @@ public class AdminController {
     }
 
     @PutMapping("/contact-type/{id}")
-    public ResponseEntity<ContactTypeDto> updateContactType(@PathVariable(name = "id") Long id, @Validated(ContactTypeDto.OnUpdate.class) @RequestBody ContactTypeDto dto) {
+    public ResponseEntity<ContactTypeDto> updateContactType(
+            @PathVariable(name = "id") Long id,
+            @Validated(ContactTypeDto.OnUpdate.class)
+            @RequestBody ContactTypeDto dto)
+    {
         var oldContactType = contactTypeService.findById(id);
         if (!dto.getDescription().isEmpty()) {
             oldContactType.setDescription(dto.getDescription());

@@ -14,7 +14,7 @@ public class UserRequestDto {
     private String email;
 
     @NotEmpty
-    @Pattern(regexp = "(?=^.{8,}$)(?=.*\\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$", message = "Not valid")
+    @Pattern(regexp = "(?=^.{8,}$)(?=.*\\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$", message = "Not valid password pattern")
     private String password;
 
     @NotEmpty(message = "Must not be empty")

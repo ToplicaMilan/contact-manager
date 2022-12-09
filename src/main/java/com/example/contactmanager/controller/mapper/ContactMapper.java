@@ -22,6 +22,7 @@ public class ContactMapper {
         dto.setLastName(contact.getLastName());
         dto.setAddress(contact.getAddress());
         dto.setPhoneNumber(contact.getPhoneNumber());
+        dto.setType(contact.getContactType().getType());
         return dto;
     }
 }

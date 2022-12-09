@@ -12,7 +12,7 @@ public interface ContactTypeRepository extends JpaRepository<ContactType, Long> 
 
     List<ContactType> findAll();
 
-    Optional<ContactType> findByType(String type);
+    Optional<ContactType> findByTypeIgnoreCase(String type);
 
     Optional<ContactType> findById(Long id);
 

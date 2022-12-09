@@ -29,6 +29,11 @@ public class ContactTypeService {
                 .orElseThrow(() -> new ContactTypeException("Contact Type does not exists"));
     }
 
+    public ContactType findByType(String type) {
+        return contactTypeRepository.findByTypeIgnoreCase(type)
+                .orElseThrow(() -> new ContactTypeException("Contact Type does not exists"));
+    }
+
     public void deleteContactType(ContactType contactType) {
         contactTypeRepository.delete(contactType);
     }

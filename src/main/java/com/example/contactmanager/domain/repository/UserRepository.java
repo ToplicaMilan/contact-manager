@@ -1,5 +1,6 @@
 package com.example.contactmanager.domain.repository;
 
+import com.example.contactmanager.domain.entity.Contact;
 import com.example.contactmanager.domain.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -21,4 +22,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Override
     Optional<User> findById(Long id);
+
 }
