@@ -1,17 +1,17 @@
 package com.example.contactmanager.controller;
 
 import com.example.contactmanager.controller.dto.ContactDto;
+import com.example.contactmanager.controller.dto.CustomPageDto;
 import com.example.contactmanager.controller.dto.UserRequestDto;
 import com.example.contactmanager.controller.dto.UserResponseDto;
 import com.example.contactmanager.controller.mapper.ContactMapper;
 import com.example.contactmanager.controller.mapper.UserMapper;
 import com.example.contactmanager.domain.BridgeUser;
 import com.example.contactmanager.domain.repository.ContactRepository;
+import com.example.contactmanager.domain.repository.UserRepository;
 import com.example.contactmanager.service.ContactService;
 import com.example.contactmanager.service.ContactTypeService;
 import com.example.contactmanager.service.UserService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,8 +20,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
@@ -33,17 +31,16 @@ public class UserController {
     private final ContactService contactService;
     private final ContactRepository contactRepository;
     private final ContactTypeService contactTypeService;
+    private final UserRepository userRepository;
 
-    public UserController(UserService userService, UserMapper userMapper,
-                          ContactMapper contactMapper, ContactService contactService,
-                          ContactTypeService contactTypeService, ContactRepository contactRepository)
-    {
+    public UserController(UserService userService, UserMapper userMapper, ContactMapper contactMapper, ContactService contactService, ContactTypeService contactTypeService, ContactRepository contactRepository, UserRepository userRepository) {
         this.userService = userService;
         this.userMapper = userMapper;
         this.contactMapper = contactMapper;
         this.contactService = contactService;
         this.contactTypeService = contactTypeService;
         this.contactRepository = contactRepository;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/signup")
@@ -56,10 +53,7 @@ public class UserController {
     }
 
     @PostMapping("/contact")
-    public ResponseEntity<ContactDto> createContact(
-            @Valid @RequestBody ContactDto dto,
-            @AuthenticationPrincipal BridgeUser bridgeUser)
-    {
+    public ResponseEntity<ContactDto> createContact(@Valid @RequestBody ContactDto dto, @AuthenticationPrincipal BridgeUser bridgeUser) {
         var user = userService.findById(bridgeUser.getId());
         var contactType = contactTypeService.findByType(dto.getType());
         var contact = contactMapper.mapToEntity(dto);
@@ -70,26 +64,32 @@ public class UserController {
         return ResponseEntity.created(location).build();
     }
 
-    @GetMapping("/contact")
-    public ResponseEntity<List<ContactDto>> getAllUserContacts(
-            @AuthenticationPrincipal BridgeUser bridgeUser,
-            @RequestParam(defaultValue = "0") Integer pageNumber,
-            @RequestParam(defaultValue = "4") Integer pageSize)
-    {
+    @DeleteMapping("/contact/{id}")
+    public ResponseEntity<Void> deleteContact(@AuthenticationPrincipal BridgeUser bridgeUser, @PathVariable Long id) {
         var user = userService.findById(bridgeUser.getId());
-        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
-        List<ContactDto> userContacts = new ArrayList<>();
-
-        for (var contact : contactRepository.findAllByUserId(user.getId(), pageRequest)) {
-            userContacts.add(contactMapper.mapToDto(contact));
+        var contact = contactService.findById(id);
+        Long userId = contact.getUser().getId();
+        if (bridgeUser.getId().equals(contact.getUser().getId())) {
+            contactService.deleteContact(contact);
         }
-        return ResponseEntity.ok(userContacts);
+        return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/contact/{id}")
-    public ResponseEntity<Void> deleteUserContact(@PathVariable Long id) {
+    @GetMapping("/contact")
+    public ResponseEntity<CustomPageDto> getAllContacts(@AuthenticationPrincipal BridgeUser bridgeUser, Pageable pageable) {
+        var user = userService.findById(bridgeUser.getId());
+        return ResponseEntity.ok(contactMapper.mapToPageDto(user, pageable));
+    }
+
+    @PutMapping("/contact/{id}")
+    public ResponseEntity<Void> updateContact(@PathVariable Long id, @RequestBody ContactDto dto) {
         var contact = contactService.findById(id);
-        contactService.deleteContact(contact);
+        contactMapper.updateContact(contact, dto);
+        if (!dto.getType().isEmpty()) {
+            var contactType = contactTypeService.findByType(dto.getType());
+            contact.setContactType(contactType);
+        }
+        contactService.saveContact(contact);
         return ResponseEntity.noContent().build();
     }
 }

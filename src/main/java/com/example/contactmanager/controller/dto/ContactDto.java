@@ -9,28 +9,21 @@ public class ContactDto {
 
     @NotEmpty(message = "Must not be empty", groups = OnCreate.class)
     @NotBlank
-    @NotNull
-    private String firstName;
+    private static String firstName;
 
-//    @NotEmpty(message = "Must not be empty")
-    @NotNull
     @NotBlank
     private String lastName;
 
-//    @NotEmpty(message = "Must not be empty")
-    @NotNull
     @NotBlank
     private String address;
 
     @NotEmpty(message = "Must not be empty")
     @NotBlank
-    @NotNull
     @Pattern(regexp = "^(\\+\\d{1,3}( )?)?((\\(\\d{1,3}\\))|\\d{1,3})[- .]?\\d{3,4}[- .]?\\d{4}$", message = "Not valid number", groups = OnCreate.class)
     private String phoneNumber;
 
     @NotEmpty(message = "Must not be empty", groups = OnCreate.class)
     @NotBlank
-    @NotNull
     private String type;
 
     public void setFirstName(String firstName) {

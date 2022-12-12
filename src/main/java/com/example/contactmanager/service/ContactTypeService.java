@@ -18,9 +18,6 @@ public class ContactTypeService {
     }
 
     public void saveContactType(ContactType contactType) {
-        if (contactTypeRepository.existsByTypeIgnoreCase(contactType.getType())) {
-            throw new ContactTypeException("Contact Type already exists");
-        }
         contactTypeRepository.save(contactType);
     }
 
