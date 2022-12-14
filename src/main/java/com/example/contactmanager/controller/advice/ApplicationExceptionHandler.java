@@ -1,6 +1,9 @@
 package com.example.contactmanager.controller.advice;
 
-import com.example.contactmanager.exception.ContactTypeException;
+import com.example.contactmanager.service.exception.ConflictException;
+import com.example.contactmanager.service.exception.ContactTypeException;
+import com.example.contactmanager.service.exception.ForbiddenException;
+import com.example.contactmanager.service.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -17,6 +20,24 @@ public class ApplicationExceptionHandler {
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     @ExceptionHandler(ContactTypeException.class)
     public ErrorMessage handleValidationException(ContactTypeException e) {
+        return new ErrorMessage(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(ForbiddenException.class)
+    public ErrorMessage handleForbiddenException(ForbiddenException e) {
+        return new ErrorMessage(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(ConflictException.class)
+    public ErrorMessage handleConflictException(ConflictException e) {
+        return new ErrorMessage(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NotFoundException.class)
+    public ErrorMessage handleNotFoundException(NotFoundException e) {
         return new ErrorMessage(e.getMessage());
     }
 

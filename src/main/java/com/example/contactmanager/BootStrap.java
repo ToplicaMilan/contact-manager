@@ -44,7 +44,6 @@ public class BootStrap {
         user4.setRole(RoleType.ADMIN);
         userRepository.save(user4);
 
-
         System.out.println("Hello is anyone there");
     }
 }

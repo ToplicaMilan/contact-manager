@@ -1,4 +1,4 @@
-package com.example.contactmanager.exception;
+package com.example.contactmanager.service.exception;
 
 public class ContactTypeException extends RuntimeException {
 

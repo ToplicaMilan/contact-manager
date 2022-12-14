@@ -1,29 +1,22 @@
 package com.example.contactmanager.controller.dto;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 public class ContactDto {
 
-    @NotEmpty(message = "Must not be empty", groups = OnCreate.class)
-    @NotBlank
-    private static String firstName;
+    @NotBlank(message = "Must not be blank", groups = OnCreate.class)
+    private String firstName;
 
-    @NotBlank
+//    @NotBlank(message = "Must not be blank", groups = OnCreate.class)
     private String lastName;
 
-    @NotBlank
     private String address;
 
-    @NotEmpty(message = "Must not be empty")
-    @NotBlank
-    @Pattern(regexp = "^(\\+\\d{1,3}( )?)?((\\(\\d{1,3}\\))|\\d{1,3})[- .]?\\d{3,4}[- .]?\\d{4}$", message = "Not valid number", groups = OnCreate.class)
+    @Pattern(regexp = "^(\\+\\d{1,3}( )?)?((\\(\\d{1,3}\\))|\\d{1,3})[- .]?\\d{3,4}[- .]?\\d{4}$", message = "Not valid number", groups = {OnCreate.class, OnUpdate.class})
     private String phoneNumber;
 
-    @NotEmpty(message = "Must not be empty", groups = OnCreate.class)
-    @NotBlank
+    @NotBlank(message = "Must not be blank", groups = OnCreate.class)
     private String type;
 
     public void setFirstName(String firstName) {
@@ -67,5 +60,8 @@ public class ContactDto {
     }
 
     public interface OnCreate {
+    }
+
+    public interface OnUpdate {
     }
 }

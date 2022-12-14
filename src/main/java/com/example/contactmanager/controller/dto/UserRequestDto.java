@@ -3,21 +3,20 @@ package com.example.contactmanager.controller.dto;
 import com.example.contactmanager.domain.entity.RoleType;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 public class UserRequestDto {
 
-    //group pored message
-    @NotEmpty(message = "Must not be empty")
+    @NotBlank(message = "Must not be blank", groups = OnCreate.class)
     @Email(message = "Not valid")
     private String email;
 
-    @NotEmpty
-    @Pattern(regexp = "(?=^.{8,}$)(?=.*\\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$", message = "Not valid password pattern")
+    @NotBlank(message = "Must not be blank", groups = OnCreate.class)
+    @Pattern(regexp = "(?=^.{8,}$)(?=.*\\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$", message = "Not valid password pattern", groups = OnCreate.class)
     private String password;
 
-    @NotEmpty(message = "Must not be empty")
+    @NotBlank(message = "Must not be blank")
     private RoleType role;
 
     public String getEmail() {
@@ -42,5 +41,8 @@ public class UserRequestDto {
 
     public void setRole(RoleType role) {
         this.role = role;
+    }
+
+    public interface OnCreate {
     }
 }
