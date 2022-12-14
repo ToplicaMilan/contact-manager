@@ -14,7 +14,7 @@ public class UserMapper {
     protected PasswordEncoder passwordEncoder;
 
     public User mapToEntity(UserRequestDto dto) {
-        User user = new User();
+        var user = new User();
         user.setEmail(dto.getEmail());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setRole(dto.getRole());
@@ -22,9 +22,22 @@ public class UserMapper {
     }
 
     public UserResponseDto mapToDto(User user) {
-        UserResponseDto dto = new UserResponseDto();
+        var dto = new UserResponseDto();
         dto.setEmail(user.getEmail());
         dto.setRoleType(user.getRole());
         return dto;
+    }
+
+    public User updateUser(User user, UserRequestDto dto) {
+        if (!dto.getEmail().isBlank()) {
+            user.setEmail(dto.getEmail());
+        }
+        if (!dto.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+        if (!dto.getRole().toString().isBlank()) {
+            user.setRole(dto.getRole());
+        }
+        return user;
     }
 }

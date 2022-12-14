@@ -3,7 +3,7 @@ package com.example.contactmanager.service;
 import com.example.contactmanager.domain.entity.Contact;
 import com.example.contactmanager.domain.entity.User;
 import com.example.contactmanager.domain.repository.ContactRepository;
-import com.example.contactmanager.exception.ContactException;
+import com.example.contactmanager.service.exception.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,11 @@ public class ContactService {
 
     public Contact findById(Long id) {
         return contactRepository.findById(id)
-                .orElseThrow(() -> new ContactException("Contact does not exists"));
+                .orElseThrow(() -> new NotFoundException("Contact does not exists"));
+    }
+
+    public boolean existsById(Long id) {
+        return contactRepository.existsById(id);
     }
 
     public void saveContact(Contact contact) {

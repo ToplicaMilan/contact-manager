@@ -3,8 +3,8 @@ package com.example.contactmanager.service;
 import com.example.contactmanager.controller.mapper.UserMapper;
 import com.example.contactmanager.domain.entity.User;
 import com.example.contactmanager.domain.repository.UserRepository;
-import com.example.contactmanager.exception.UserEmailException;
-import com.example.contactmanager.exception.UserNotFoundException;
+import com.example.contactmanager.service.exception.ConflictException;
+import com.example.contactmanager.service.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,17 +20,13 @@ public class UserService {
 
     public void saveUser(User user) {
         if (userRepository.existsByEmail(user.getEmail())) {
-            throw new UserEmailException("Email already taken");
+            throw new ConflictException("Email already taken");
         }
         userRepository.save(user);
     }
 
     public User findById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User with this id does not exists"));
-
+        return userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User with this id does not exists"));
     }
-
-//    public List<User> findAll() {
-//        return userRepository.findAll();
-//    }
 }

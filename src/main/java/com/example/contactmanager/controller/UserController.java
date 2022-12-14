@@ -9,16 +9,17 @@ import com.example.contactmanager.controller.mapper.UserMapper;
 import com.example.contactmanager.domain.BridgeUser;
 import com.example.contactmanager.domain.repository.ContactRepository;
 import com.example.contactmanager.domain.repository.UserRepository;
+import com.example.contactmanager.service.exception.ForbiddenException;
 import com.example.contactmanager.service.ContactService;
 import com.example.contactmanager.service.ContactTypeService;
 import com.example.contactmanager.service.UserService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -33,7 +34,8 @@ public class UserController {
     private final ContactTypeService contactTypeService;
     private final UserRepository userRepository;
 
-    public UserController(UserService userService, UserMapper userMapper, ContactMapper contactMapper, ContactService contactService, ContactTypeService contactTypeService, ContactRepository contactRepository, UserRepository userRepository) {
+    public UserController(UserService userService, UserMapper userMapper, ContactMapper contactMapper, ContactService contactService,
+                          ContactTypeService contactTypeService, ContactRepository contactRepository, UserRepository userRepository) {
         this.userService = userService;
         this.userMapper = userMapper;
         this.contactMapper = contactMapper;
@@ -53,7 +55,8 @@ public class UserController {
     }
 
     @PostMapping("/contact")
-    public ResponseEntity<ContactDto> createContact(@Valid @RequestBody ContactDto dto, @AuthenticationPrincipal BridgeUser bridgeUser) {
+    public ResponseEntity<ContactDto> createContact(@Validated(ContactDto.OnCreate.class) @RequestBody ContactDto dto,
+                                                    @AuthenticationPrincipal BridgeUser bridgeUser) {
         var user = userService.findById(bridgeUser.getId());
         var contactType = contactTypeService.findByType(dto.getType());
         var contact = contactMapper.mapToEntity(dto);
@@ -64,15 +67,16 @@ public class UserController {
         return ResponseEntity.created(location).build();
     }
 
-    @DeleteMapping("/contact/{id}")
-    public ResponseEntity<Void> deleteContact(@AuthenticationPrincipal BridgeUser bridgeUser, @PathVariable Long id) {
-        var user = userService.findById(bridgeUser.getId());
-        var contact = contactService.findById(id);
-        Long userId = contact.getUser().getId();
-        if (bridgeUser.getId().equals(contact.getUser().getId())) {
-            contactService.deleteContact(contact);
+    @PutMapping("/contact/{id}")
+    public ResponseEntity<ContactDto> updateContact(@Validated(ContactDto.OnUpdate.class) @RequestBody ContactDto dto, @PathVariable Long id) {
+        var oldContact = contactService.findById(id);
+        oldContact = contactMapper.updateContact(oldContact, dto);
+        if (!dto.getType().isEmpty()) {
+            var contactType = contactTypeService.findByType(dto.getType());
+            oldContact.setContactType(contactType);
         }
-        return ResponseEntity.noContent().build();
+        contactService.saveContact(oldContact);
+        return ResponseEntity.ok(contactMapper.mapToDto(oldContact));
     }
 
     @GetMapping("/contact")
@@ -81,15 +85,15 @@ public class UserController {
         return ResponseEntity.ok(contactMapper.mapToPageDto(user, pageable));
     }
 
-    @PutMapping("/contact/{id}")
-    public ResponseEntity<Void> updateContact(@PathVariable Long id, @RequestBody ContactDto dto) {
+    @DeleteMapping("/contact/{id}")
+    public ResponseEntity<Void> deleteContact(@AuthenticationPrincipal BridgeUser bridgeUser, @PathVariable Long id) {
+        var user = userService.findById(bridgeUser.getId());
         var contact = contactService.findById(id);
-        contactMapper.updateContact(contact, dto);
-        if (!dto.getType().isEmpty()) {
-            var contactType = contactTypeService.findByType(dto.getType());
-            contact.setContactType(contactType);
+        if (bridgeUser.getId().equals(contact.getUser().getId())) {
+            contactService.deleteContact(contact);
+        } else {
+            throw new ForbiddenException("Forbidden Access");
         }
-        contactService.saveContact(contact);
         return ResponseEntity.noContent().build();
     }
 }
