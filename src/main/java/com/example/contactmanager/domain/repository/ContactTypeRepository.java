@@ -17,5 +17,4 @@ public interface ContactTypeRepository extends JpaRepository<ContactType, Long> 
     Optional<ContactType> findById(Long id);
 
     boolean existsByTypeIgnoreCase(String type);
-
 }

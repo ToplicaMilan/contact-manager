@@ -1,15 +1,16 @@
 package com.example.contactmanager.controller;
 
 import com.example.contactmanager.controller.dto.ContactTypeDto;
+import com.example.contactmanager.controller.dto.CustomPageDto;
 import com.example.contactmanager.controller.dto.UserRequestDto;
 import com.example.contactmanager.controller.dto.UserResponseDto;
 import com.example.contactmanager.controller.mapper.UserMapper;
 import com.example.contactmanager.domain.entity.ContactType;
-import com.example.contactmanager.service.exception.ConflictException;
-import com.example.contactmanager.service.exception.ContactTypeException;
 import com.example.contactmanager.service.ContactService;
 import com.example.contactmanager.service.ContactTypeService;
 import com.example.contactmanager.service.UserService;
+import com.example.contactmanager.service.exception.ConflictException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ import static java.util.Objects.nonNull;
 
 @RestController
 @RequestMapping("/api/admin")
-public class AdminController {
+public class AdminController implements AdminApi {
 
     private final ContactTypeService contactTypeService;
     private final UserService userService;
@@ -40,7 +41,6 @@ public class AdminController {
     public ResponseEntity<UserResponseDto> createUser(@Valid @RequestBody UserRequestDto dto) {
         var user = userMapper.mapToEntity(dto);
         userService.saveUser(user);
-        var responseDto = userMapper.mapToDto(user);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").build(user.getId());
         return ResponseEntity.created(location).build();
     }
@@ -48,16 +48,26 @@ public class AdminController {
     @PutMapping("/user/{id}")
     public ResponseEntity<UserResponseDto> updateUser(@Validated(UserRequestDto.OnCreate.class) @RequestBody UserRequestDto dto,
                                                       @PathVariable Long id) {
-        var oldUser = userService.findById(id);
-        oldUser = userMapper.updateUser(oldUser, dto);
-        userService.saveUser(oldUser);
-        return ResponseEntity.ok(userMapper.mapToDto(oldUser));
+        var userToUpdate = userService.findById(id);
+        var updatedUser = userMapper.updateUser(userToUpdate, dto);
+        userService.updateUser(updatedUser, userToUpdate.getEmail());
+        return ResponseEntity.ok(userMapper.mapToDto(userToUpdate));
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<UserResponseDto> getUser(@PathVariable Long id) {
+        return ResponseEntity.ok(userMapper.mapToDto(userService.getUser(id)));
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<CustomPageDto> getAllUsers(Pageable pageable) {
+        return ResponseEntity.ok(userMapper.mapToPageDto(pageable));
     }
 
     @PostMapping("/contact-type")
     public ResponseEntity<ContactTypeDto> createContactType(@Validated(ContactTypeDto.OnCreate.class) @RequestBody ContactTypeDto dto) {
         if (contactTypeService.existsByType(dto.getType())) {
-            throw new ContactTypeException("Contact Type already exists");
+            throw new ConflictException("Contact Type already exists");
         }
         var newContactType = new ContactType();
         newContactType.setDescription(dto.getDescription());

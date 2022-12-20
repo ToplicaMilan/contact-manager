@@ -16,12 +16,11 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfiguration {
-
+public class SecurityConfig {
 
     private final UserDetailServiceImpl detailService;
 
-    public SecurityConfiguration(UserDetailServiceImpl detailService) {
+    public SecurityConfig(UserDetailServiceImpl detailService) {
         this.detailService = detailService;
     }
 

@@ -11,10 +11,10 @@ import java.util.List;
 
 public class BridgeUser implements UserDetails {
 
-    private Long id;
-    private String email;
-    private String password;
-    private RoleType role;
+    private final Long id;
+    private final String email;
+    private final String password;
+    private final RoleType role;
 
     public BridgeUser(User user) {
         id = user.getId();
