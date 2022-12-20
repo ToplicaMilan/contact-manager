@@ -34,6 +34,17 @@ public class ContactService {
         return contactRepository.findAllByUser(user, pageable);
     }
 
+    public Contact getUserContacts(Long id) {
+        return contactRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Contact not found"));
+    }
+
+    public Page<Contact> searchUserContacts(User user, String param, Pageable pageable) {
+        return contactRepository
+                .findAllByUserAndFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCaseOrPhoneNumberContaining
+                        (user, param, param, param, pageable);
+    }
+
     public void deleteContact(Contact contact) {
         contactRepository.delete(contact);
     }

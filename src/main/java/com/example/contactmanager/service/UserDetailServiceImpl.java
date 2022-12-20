@@ -12,8 +12,8 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    public UserDetailServiceImpl(UserRepository users) {
-        this.userRepository = users;
+    public UserDetailServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override

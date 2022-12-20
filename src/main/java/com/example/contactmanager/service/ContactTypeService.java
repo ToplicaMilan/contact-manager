@@ -9,11 +9,9 @@ import org.springframework.stereotype.Service;
 public class ContactTypeService {
 
     private final ContactTypeRepository contactTypeRepository;
-    private final ContactTypeMapper contactTypeMapper;
 
-    public ContactTypeService(ContactTypeRepository contactTypeRepository, ContactTypeMapper typeMapper) {
+    public ContactTypeService(ContactTypeRepository contactTypeRepository) {
         this.contactTypeRepository = contactTypeRepository;
-        this.contactTypeMapper = typeMapper;
     }
 
     public void saveContactType(ContactType contactType) {
@@ -37,5 +35,4 @@ public class ContactTypeService {
     public void deleteContactType(ContactType contactType) {
         contactTypeRepository.delete(contactType);
     }
-
 }

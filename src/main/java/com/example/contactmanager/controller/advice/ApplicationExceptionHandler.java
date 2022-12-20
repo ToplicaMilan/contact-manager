@@ -1,9 +1,9 @@
 package com.example.contactmanager.controller.advice;
 
 import com.example.contactmanager.service.exception.ConflictException;
-import com.example.contactmanager.service.exception.ContactTypeException;
 import com.example.contactmanager.service.exception.ForbiddenException;
 import com.example.contactmanager.service.exception.NotFoundException;
+import com.example.contactmanager.service.exception.UnauthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,21 +11,21 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class ApplicationExceptionHandler {
 
-    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    @ExceptionHandler(ContactTypeException.class)
-    public ErrorMessage handleValidationException(ContactTypeException e) {
-        return new ErrorMessage(e.getMessage());
-    }
-
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler(ForbiddenException.class)
     public ErrorMessage handleForbiddenException(ForbiddenException e) {
+        return new ErrorMessage(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(UnauthorizedException.class)
+    public ErrorMessage handleUnauthorizedException(UnauthorizedException e) {
         return new ErrorMessage(e.getMessage());
     }
 
@@ -44,11 +44,8 @@ public class ApplicationExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationError(MethodArgumentNotValidException e) {
-        Map<String, String> violations = new HashMap<>();
-        for (FieldError fieldError : e.getBindingResult().getFieldErrors()) {
-            violations.put(fieldError.getField(), fieldError.getDefaultMessage());
-        }
-        return violations;
+        return e.getBindingResult().getFieldErrors().stream()
+                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
