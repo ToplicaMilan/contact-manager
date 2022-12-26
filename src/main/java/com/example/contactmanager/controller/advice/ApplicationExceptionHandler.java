@@ -1,9 +1,6 @@
 package com.example.contactmanager.controller.advice;
 
-import com.example.contactmanager.service.exception.ConflictException;
-import com.example.contactmanager.service.exception.ForbiddenException;
-import com.example.contactmanager.service.exception.NotFoundException;
-import com.example.contactmanager.service.exception.UnauthorizedException;
+import com.example.contactmanager.service.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -36,7 +33,7 @@ public class ApplicationExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NotFoundException.class)
+    @ExceptionHandler(NotFoundException.class    )
     public ErrorMessage handleNotFoundException(NotFoundException e) {
         return new ErrorMessage(e.getMessage());
     }
@@ -44,7 +41,9 @@ public class ApplicationExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationError(MethodArgumentNotValidException e) {
-        return e.getBindingResult().getFieldErrors().stream()
+        return e.getBindingResult()
+                .getFieldErrors()
+                .stream()
                 .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
     }
 

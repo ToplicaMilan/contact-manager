@@ -7,7 +7,7 @@ public class ContactTypeDto {
     @NotBlank(message = "Must not be blank", groups = OnCreate.class)
     private String description;
 
-    @NotBlank(message = "Must not be blank", groups = {OnUpdate.class, OnCreate.class})
+    @NotBlank(message = "Must not be blank", groups = {OnCreate.class, OnUpdate.class})
     private String type;
 
     public String getDescription() {

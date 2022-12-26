@@ -8,6 +8,7 @@ import com.example.contactmanager.controller.mapper.UserMapper;
 import com.example.contactmanager.domain.entity.ContactType;
 import com.example.contactmanager.service.ContactService;
 import com.example.contactmanager.service.ContactTypeService;
+import com.example.contactmanager.service.EmailService;
 import com.example.contactmanager.service.UserService;
 import com.example.contactmanager.service.exception.ConflictException;
 import org.springframework.data.domain.Pageable;
@@ -28,9 +29,10 @@ public class AdminController implements AdminApi {
     private final ContactTypeService contactTypeService;
     private final UserService userService;
     private final UserMapper userMapper;
-    ContactService contactService;
+    private final ContactService contactService;
 
-    public AdminController(ContactTypeService typeService, UserService userService, UserMapper userMapper, ContactService contactService) {
+    public AdminController(ContactTypeService typeService, UserService userService, UserMapper userMapper,
+                           ContactService contactService) {
         this.contactTypeService = typeService;
         this.userService = userService;
         this.userMapper = userMapper;
@@ -38,7 +40,8 @@ public class AdminController implements AdminApi {
     }
 
     @PostMapping("/user")
-    public ResponseEntity<UserResponseDto> createUser(@Valid @RequestBody UserRequestDto dto) {
+    public ResponseEntity<UserResponseDto> createUser(@Validated(UserRequestDto.OnCreate.class)
+                                                          @RequestBody UserRequestDto dto) {
         var user = userMapper.mapToEntity(dto);
         userService.saveUser(user);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").build(user.getId());
@@ -46,12 +49,13 @@ public class AdminController implements AdminApi {
     }
 
     @PutMapping("/user/{id}")
-    public ResponseEntity<UserResponseDto> updateUser(@Validated(UserRequestDto.OnCreate.class) @RequestBody UserRequestDto dto,
-                                                      @PathVariable Long id) {
-        var userToUpdate = userService.findById(id);
-        var updatedUser = userMapper.updateUser(userToUpdate, dto);
-        userService.updateUser(updatedUser, userToUpdate.getEmail());
-        return ResponseEntity.ok(userMapper.mapToDto(userToUpdate));
+    public ResponseEntity<UserResponseDto> updateUser(@Validated(UserRequestDto.OnUpdate.class)
+                                                          @RequestBody UserRequestDto dto, @PathVariable Long id) {
+        var oldUser = userService.findById(id);
+        String oldEmail = oldUser.getEmail();
+        var updatedUser = userMapper.updateUser(oldUser, dto);
+        userService.updateUser(updatedUser, oldEmail);
+        return ResponseEntity.ok(userMapper.mapToDto(oldUser));
     }
 
     @GetMapping("/user/{id}")
@@ -78,9 +82,8 @@ public class AdminController implements AdminApi {
     }
 
     @PutMapping("/contact-type/{id}")
-    public ResponseEntity<ContactTypeDto> updateContactType(@PathVariable(name = "id") Long id,
-                                                            @Validated(ContactTypeDto.OnUpdate.class)
-                                                            @RequestBody ContactTypeDto dto) {
+    public ResponseEntity<ContactTypeDto> updateContactType(@Validated(ContactTypeDto.OnUpdate.class)
+                                                                @RequestBody ContactTypeDto dto, @PathVariable(name = "id") Long id) {
         var oldContactType = contactTypeService.findById(id);
         if (nonNull(dto.getDescription()) && !dto.getDescription().isEmpty()) {
             oldContactType.setDescription(dto.getDescription());

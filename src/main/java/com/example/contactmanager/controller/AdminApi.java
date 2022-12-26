@@ -40,8 +40,8 @@ public interface AdminApi {
 
     @Operation(summary = "Updates contact type info.")
     @PutMapping("/contact-type/{id}")
-    ResponseEntity<ContactTypeDto> updateContactType(@PathVariable(name = "id") Long id,
-                                                     @Validated(ContactTypeDto.OnUpdate.class) @RequestBody ContactTypeDto dto);
+    ResponseEntity<ContactTypeDto> updateContactType(@Validated(ContactTypeDto.OnUpdate.class)
+                                                     @RequestBody ContactTypeDto dto, @PathVariable(name = "id") Long id);
 
     @Operation(summary = "Deletes any contact type.")
     @DeleteMapping("/contact-type/{id}")

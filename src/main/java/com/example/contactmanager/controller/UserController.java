@@ -2,10 +2,7 @@ package com.example.contactmanager.controller;
 
 import com.example.contactmanager.controller.dto.ContactDto;
 import com.example.contactmanager.controller.dto.CustomPageDto;
-import com.example.contactmanager.controller.dto.UserRequestDto;
-import com.example.contactmanager.controller.dto.UserResponseDto;
 import com.example.contactmanager.controller.mapper.ContactMapper;
-import com.example.contactmanager.controller.mapper.UserMapper;
 import com.example.contactmanager.domain.BridgeUser;
 import com.example.contactmanager.service.ContactService;
 import com.example.contactmanager.service.ContactTypeService;
@@ -21,31 +18,23 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 
+import static java.util.Objects.nonNull;
+
 @RestController
 @RequestMapping("/api/user")
 public class UserController implements UserApi {
 
     private final UserService userService;
-    private final UserMapper userMapper;
     private final ContactMapper contactMapper;
     private final ContactService contactService;
     private final ContactTypeService contactTypeService;
 
-    public UserController(UserService userService, UserMapper userMapper, ContactMapper contactMapper, ContactService contactService,
+    public UserController(UserService userService, ContactMapper contactMapper, ContactService contactService,
                           ContactTypeService contactTypeService) {
         this.userService = userService;
-        this.userMapper = userMapper;
         this.contactMapper = contactMapper;
         this.contactService = contactService;
         this.contactTypeService = contactTypeService;
-    }
-
-    @PostMapping("/signup")
-    public ResponseEntity<UserResponseDto> signUp(@RequestBody UserRequestDto dto) {
-        var user = userMapper.mapToEntity(dto);
-        userService.saveUser(user);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").build(user.getId());
-        return ResponseEntity.created(location).build();
     }
 
     @PostMapping("/contact")
@@ -62,14 +51,20 @@ public class UserController implements UserApi {
     }
 
     @PutMapping("/contact/{id}")
-    public ResponseEntity<ContactDto> updateContact(@Validated(ContactDto.OnUpdate.class) @RequestBody ContactDto dto, @PathVariable Long id) {
+    public ResponseEntity<ContactDto> updateContact(@Validated(ContactDto.OnUpdate.class) @RequestBody ContactDto dto, @PathVariable Long id,
+                                                    @AuthenticationPrincipal BridgeUser bridgeUser) {
         var oldContact = contactService.findById(id);
-        oldContact = contactMapper.updateContact(oldContact, dto);
-        if (!dto.getType().isEmpty()) {
-            var contactType = contactTypeService.findByType(dto.getType());
-            oldContact.setContactType(contactType);
+        if (!(bridgeUser.getId().equals(oldContact.getUser().getId()))) {
+            throw new ForbiddenException("Forbidden Access");
         }
-        contactService.saveContact(oldContact);
+        var updatedContact = contactMapper.updateContact(oldContact, dto);
+        if (nonNull(dto.getType()) && !dto.getType().isEmpty()) {
+            if (contactTypeService.existsByType(dto.getType())) {
+                var contactType = contactTypeService.findByType(dto.getType());
+                updatedContact.setContactType(contactType);
+            }
+        }
+        contactService.saveContact(updatedContact);
         return ResponseEntity.ok(contactMapper.mapToDto(oldContact));
     }
 
@@ -83,7 +78,7 @@ public class UserController implements UserApi {
     public ResponseEntity<ContactDto> getContact(@AuthenticationPrincipal BridgeUser bridgeUser, @PathVariable Long id) {
         var contact = contactService.findById(id);
         if (!(bridgeUser.getId().equals(contact.getUser().getId()))) {
-            throw new UnauthorizedException("Unauthorized access");
+            throw new ForbiddenException("Forbidden Access");
         }
         return ResponseEntity.ok(contactMapper.mapToDto(contactService.getUserContacts(id)));
     }
@@ -98,10 +93,10 @@ public class UserController implements UserApi {
     @DeleteMapping("/contact/{id}")
     public ResponseEntity<Void> deleteContact(@AuthenticationPrincipal BridgeUser bridgeUser, @PathVariable Long id) {
         var contact = contactService.findById(id);
-        if (bridgeUser.getId().equals(contact.getUser().getId())) {
-            contactService.deleteContact(contact);
-        } else {
+        if (!bridgeUser.getId().equals(contact.getUser().getId())) {
             throw new ForbiddenException("Forbidden Access");
+        } else {
+            contactService.deleteContact(contact);
         }
         return ResponseEntity.noContent().build();
     }

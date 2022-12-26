@@ -12,9 +12,11 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final EmailService emailService;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, EmailService emailService) {
         this.userRepository = userRepository;
+        this.emailService = emailService;
     }
 
     public void saveUser(User user) {
@@ -22,6 +24,7 @@ public class UserService {
             throw new ConflictException("Email already taken");
         }
         userRepository.save(user);
+        emailService.sendCreateConfirmation(user.getEmail());
     }
 
     public void updateUser(User updatedUser, String oldEmail) {
@@ -29,6 +32,7 @@ public class UserService {
             throw new ConflictException("Email already taken");
         }
         userRepository.save(updatedUser);
+        emailService.sendUpdateConfirmation(updatedUser.getEmail());
     }
 
     public User findById(Long id) {

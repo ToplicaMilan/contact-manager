@@ -3,12 +3,15 @@ package com.example.contactmanager.controller.mapper;
 import com.example.contactmanager.controller.dto.CustomPageDto;
 import com.example.contactmanager.controller.dto.UserRequestDto;
 import com.example.contactmanager.controller.dto.UserResponseDto;
+import com.example.contactmanager.domain.entity.RoleType;
 import com.example.contactmanager.domain.entity.User;
 import com.example.contactmanager.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import static java.util.Objects.nonNull;
 
 @Component
 public class UserMapper {
@@ -26,7 +29,12 @@ public class UserMapper {
         var user = new User();
         user.setEmail(dto.getEmail());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        user.setRole(dto.getRole());
+        if (dto.getRole().equals("USER")) {
+            user.setRole(RoleType.USER);
+        }
+        if (dto.getRole().equals("ADMIN")) {
+            user.setRole(RoleType.ADMIN);
+        }
         return user;
     }
 
@@ -38,20 +46,28 @@ public class UserMapper {
     }
 
     public User updateUser(User user, UserRequestDto dto) {
-        if (!dto.getEmail().isBlank()) {
+        if (nonNull(dto.getEmail()) && !dto.getEmail().isBlank()) {
             user.setEmail(dto.getEmail());
         }
-        if (!dto.getPassword().isBlank()) {
+        if (nonNull(dto.getPassword()) && !dto.getPassword().isBlank()) {
             user.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
-        if (!dto.getRole().toString().isBlank()) {
-            user.setRole(dto.getRole());
+        if (!dto.getRole().isBlank()) {
+            if (dto.getRole().equals("USER")) {
+                user.setRole(RoleType.USER);
+            }
+            if (dto.getRole().equals("ADMIN")) {
+                user.setRole(RoleType.ADMIN);
+            }
         }
         return user;
     }
 
     public CustomPageDto mapToPageDto(Pageable pageable) {
         var users = userService.getAllUsers(pageable).map(this::mapToDto);
-        return new CustomPageDto<>(users.getContent(), pageable.getPageNumber(), pageable.getPageSize(), users.getTotalElements());
+        return new CustomPageDto<>(users.getContent(),
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                users.getTotalElements());
     }
 }

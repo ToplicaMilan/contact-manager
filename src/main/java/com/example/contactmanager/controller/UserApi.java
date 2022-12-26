@@ -3,8 +3,6 @@ package com.example.contactmanager.controller;
 import com.example.contactmanager.config.SwaggerConfig;
 import com.example.contactmanager.controller.dto.ContactDto;
 import com.example.contactmanager.controller.dto.CustomPageDto;
-import com.example.contactmanager.controller.dto.UserRequestDto;
-import com.example.contactmanager.controller.dto.UserResponseDto;
 import com.example.contactmanager.domain.BridgeUser;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,10 +16,6 @@ import org.springframework.web.bind.annotation.*;
 @Api(tags = {SwaggerConfig.USER_TAG})
 public interface UserApi {
 
-    @Operation(summary = "Creates account.")
-    @PostMapping("/signup")
-    ResponseEntity<UserResponseDto> signUp(@RequestBody UserRequestDto dto);
-
     @Operation(summary = "Creates contact.")
     @ApiResponse(responseCode = "201", description = "Successfully created contact")
     @PostMapping("/contact")
@@ -30,7 +24,8 @@ public interface UserApi {
 
     @Operation(summary = "Updates contact info.")
     @PutMapping("/contact/{id}")
-    ResponseEntity<ContactDto> updateContact(@Validated(ContactDto.OnUpdate.class) @RequestBody ContactDto dto, @PathVariable Long id);
+    ResponseEntity<ContactDto> updateContact(@Validated(ContactDto.OnUpdate.class) @RequestBody ContactDto dto, @PathVariable Long id,
+                                             @AuthenticationPrincipal BridgeUser bridgeUser);
 
     @Operation(summary = "Retrieves all contacts for specific user.")
     @GetMapping("/contact")

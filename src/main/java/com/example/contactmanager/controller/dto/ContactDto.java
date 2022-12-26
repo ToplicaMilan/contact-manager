@@ -7,11 +7,8 @@ public class ContactDto {
 
     @NotBlank(message = "Must not be blank", groups = OnCreate.class)
     private String firstName;
-
     private String lastName;
-
     private String address;
-
     private String country;
 
     @Pattern(regexp = "^(\\+\\d{1,3}( )?)?((\\(\\d{1,3}\\))|\\d{1,3})[- .]?\\d{3,4}[- .]?\\d{4}$", message = "Not valid number", groups = {OnCreate.class, OnUpdate.class})
