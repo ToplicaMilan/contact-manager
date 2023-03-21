@@ -12,7 +12,8 @@ types, users with User role, and delete any contact.
 * Use migrations via Flyway
 * Use SpringSecurity - HTTP Basic and UserDetailService
 interface for authentication of users by email and password
-and enable role type based access for users with ADMIN or USER roles
+and enable authorization by role type based access of ADMIN
+and USER
 * Use Swagger
 * Validate requests
 * Global Exception Handler
