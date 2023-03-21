@@ -1,6 +1,6 @@
 = Phonebook Manager
 
-Phonebook Manager is a Spring Boot application that allows users to manage their contacts. 
+Phonebook Manager is a simple Spring Boot application that allows users to manage their contacts. 
 It provides an interface for creating, reading, updating and deleting of contacts. 
 In addition, the application also provides a way for administrators to manage contact
 types, users, and delete any contact.
@@ -74,6 +74,8 @@ docker-compose up
 . Explore http://localhost:8080/swagger-ui/index.html[the API]. Username: milan2 Password: 1234
 
 == Improvements
+
+This section will list all the things I didn’t manage to cover using the best practices, due to lack of time (or knowledge).
 
 === Write multistage buld Dockerfile that runs ./mvnw clean package command.
 
