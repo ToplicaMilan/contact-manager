@@ -2,8 +2,8 @@
 
 Phonebook Manager is a simple Spring Boot application that allows users to manage their contacts. 
 It provides an interface for creating, reading, updating and deleting of contacts. 
-In addition, the application also provides a way for administrators to manage contact
-types, users, and delete any contact.
+In addition, the application also provides a way for users with Admin role to manage contact
+types, users with User role, and delete any contact.
 
 == Requirements
 
@@ -77,8 +77,8 @@ docker-compose up
 
 This section will list all the things I didn’t manage to cover using the best practices, due to lack of time (or knowledge).
 
-=== Write multistage buld Dockerfile that runs ./mvnw clean package command.
+* Write multistage buld Dockerfile that runs ./mvnw clean package command.
 
-=== Implement Jib Maven plugin for building container images for Java applications.
+* Implement Jib Maven plugin for building container images for Java applications.
 
-=== Write Unit tests.
+* Write Unit tests.
