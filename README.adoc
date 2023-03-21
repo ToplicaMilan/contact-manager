@@ -75,8 +75,8 @@ docker-compose up
 
 == Improvements
 
-===Write multistage buld Dockerfile that runs ./mvnw clean package command.
+=== Write multistage buld Dockerfile that runs ./mvnw clean package command.
 
-===Implement Jib Maven plugin for building container images for Java applications.
+=== Implement Jib Maven plugin for building container images for Java applications.
 
-===Write Unit tests.
+=== Write Unit tests.
