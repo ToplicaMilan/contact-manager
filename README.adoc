@@ -1,0 +1,80 @@
+= Phonebook Manager
+
+Phonebook Manager is a web application that allows users to manage their contacts. 
+It provides an interface for creating, reading, updating and deleting of contacts. 
+In addition, the application also provides a way for administrators to manage contact
+types, users, and delete any contact.
+
+== Requirements
+
+* Use Spring via Spring Boot
+* Use PostgreSQL as the RDBMS
+* Use migrations via Flyway
+* Use SpringSecurity - HTTP Basic and UserDetailService
+interface for authentication of users by email and password
+and enable role type based access for users with ADMIN or USER roles
+* Use Swagger
+* Validate requests
+* Global Exception Handler
+
+== Tech stack
+
+* Java 19
+* Maven - Maven Wrapper 3.8.4
+* Spring Boot 2.7.5
+* PostgreSQL 14
+* Docker and Docker Compose for containerization and deployment
+
+== Design
+
+Project is organized in a single module. Following packages can be found in the project:
+
+* `config` - classes related to Security and Swagger configuration
+* `controller` - classes for Admin and User controller, and `ApplicationExceptionHandler`,
+DTO's and Mappers
+* `domain` - classes related to Entities and Repositories
+* `services` - classes related to Services and custom Exceptions
+
+== Building application
+
+Project was generated with Spring Initializr - it includes Maven Wrapper.
+
+.Building the application
+[source,bash]
+----
+./mvnw clean install # -DskipTests
+----
+
+== Running application
+
+=== Running from command line
+
+Application requires PostgreSQL database for persistence.
+
+. Start the application
++
+[source,bash]
+----
+./mvnw spring-boot:run
+----
+
+. Explore http://localhost:8080/swagger-ui/index.html[the API]. Username: milan2 Password: 1234
+
+=== Using Docker Compose
+
+link:docker-compose.yaml[Docker Compose file] is included in project to start the application quicker.
+
+. Start services
++
+[source,bash]
+----
+docker-compose up
+----
+
+. Explore http://localhost:8080/swagger-ui/index.html[the API]. Username: milan2 Password: 1234
+
+== Improvements
+
+Write multistage buld Dockerfile that runs ./mvnw clean package command.
+Implement Jib Maven plugin for building container images for Java applications.
+Write Unit tests.
