@@ -4,7 +4,7 @@
     <persistence-units>
       <persistence-unit name="Default">
         <packages>
-          <package value="com.example.contactmanager" />
+          <package value="com.example.phonebookmanager" />
         </packages>
       </persistence-unit>
     </persistence-units>
