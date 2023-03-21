@@ -30,6 +30,7 @@ and enable role type based access for users with ADMIN or USER roles
 Project is organized in a single module. Following packages can be found in the project:
 
 * `config` - classes related to Security and Swagger configuration
+  * 'DTO'
 * `controller` - classes for Admin and User controller, and `ApplicationExceptionHandler`,
 DTO's and Mappers
 * `domain` - classes related to Entities and Repositories
