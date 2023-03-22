@@ -1,9 +1,9 @@
 = Phonebook Manager
 
-Phonebook Manager is a simple Spring Boot application that allows users to manage their contacts. 
-It provides an interface for creating, reading, updating and deleting of contacts. 
-In addition, the application also provides a way for users with Admin role to manage contact
-types, users with User role, and delete any contact.
+Phonebook Manager is a simple Spring Boot application that allows users to manage their
+contacts. It provides an REST API for creating, retrieving, updating and deleting of contacts.
+In addition, the application also provides a way for users with "ADMIN" role to create/edit/delete
+contact types, create/edit/retreive users with "USER" role and delete any contact.
 
 == Requirements
 
